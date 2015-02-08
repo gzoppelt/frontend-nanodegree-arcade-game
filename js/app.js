@@ -35,6 +35,18 @@ Enemy.prototype.update = function(dt) {
         i = allEnemies.indexOf(this);
         allEnemies.splice(i,1);
     }
+    if (this.y == player.y){
+        if (this.x + 1  > player.x + 85 || player.x + 15 < this.x + 99) {
+                //collision
+                console.log('yes: ' +player.y+'='+this.y+' && ' + player.x +15 + ' < '+this.x+' < '+player.x+85);
+                caught.play();
+                score -= 50;
+                setScore(score);
+                player = new Player();
+
+
+        }
+    }
 }
 
 
@@ -71,12 +83,12 @@ Player.prototype.update = function () {
 Player.prototype.render = function () {
     if (this.y === 0) {
         this.sprite = 'images/Star.png';
-
     } else {
         this.sprite = playerPersonality;
     }
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
+
 Player.prototype.handleInput = function (direction) {
     var ypix = 82;
     var xpix = 100;
@@ -95,7 +107,6 @@ Player.prototype.handleInput = function (direction) {
             if (this.y < 75 + 4 * 82) this.y += ypix;
             break;
     };
-
 }
 
 // Now instantiate your objects.
@@ -144,3 +155,33 @@ setScore = function (score) {
     s = s.substr(s.length- 6);
     elScore[0].innerHTML = s;
 };
+
+//Collision
+function detectCollision(){
+    var i, px, pxLeft, pxRight, py, ex, exLeft, exRight, ey;
+    px = player.x;
+    pxLeft = px + 16;
+    pxRight = px + 84;
+    py = player.y;
+    for (i in allEnemies) {
+        exLeft = allEnemies[i].x + 1;
+        exRight = allEnemies[i].x + 99;
+        ey = allEnemies[i].y;
+        if (py === ey && pxLeft < exRight && pxLeft > exLeft) {
+            //console.log('yes: ' +px+'='+py+' && ' + exLeft + ' < '+pxLeft+' < '+exRight);
+            return true;
+        } else {
+            //console.log('no: ' +px+'='+py+' && ' + exLeft + ' < '+pxLeft+' < '+exRight);
+            return false;
+        }
+    }
+    /*
+    s = x[0]+','+y[0]+' ==> ';
+    for (i=1; i < x.length; i++) {
+        s += x[i]+','+y[i] + '  ';
+    }
+    console.log(s);
+    alert(s);
+    */
+    return false;
+}
