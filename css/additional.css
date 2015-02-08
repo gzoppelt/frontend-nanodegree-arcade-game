@@ -1,0 +1,41 @@
+body {
+
+}
+#wrapper {
+    width: 905px;
+    margin: 0 auto;
+}
+
+#players {
+    margin-top: 30px;
+    width: 200px;
+    float: left;
+}
+
+#c {
+    float: left;
+}
+
+#score {
+    margin-top: 30px;
+    width: 200px;
+    text-align: center;
+    float:left;
+
+}
+
+#score>em {
+    color: blue;
+    font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 48px;
+
+}
+
+img {
+    height: 90px;
+}
+.selected {
+    border: solid 1px;
+}

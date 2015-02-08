@@ -2,7 +2,8 @@
 var Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-
+    this.x = 0;
+    this.y = 65 + Math.floor(Math.random() * 3) *82;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -14,7 +15,28 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    var i;
+
+    //define the global dt
+    dt_global = dt;
+    //define the global step
+    step = 40 * dt;
+
+    //move one step
+    this.x += step;
+
+    //create a new enemy when there is space
+    if (this.x > 101 && this.x < 101 + step) {
+        allEnemies.push(new Enemy());
+    }
+
+    //kill the bugs after they run out of the canvas
+    if (this.x > 505) {
+        i = allEnemies.indexOf(this);
+        allEnemies.splice(i,1);
+    }
 }
+
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
@@ -24,13 +46,58 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+var Player = function () {
+    //x random between 0 and 400
+    this.x = Math.floor(Math.random() * 5) * 100;
+    this.y = 75 + (4 * 82);
 
+}
+Player.prototype.update = function () {
+
+    if (this.y < 75) {
+        splash.play();
+        setTimeout(function (){ player = new Player(); }, 500);
+    }
+}
+Player.prototype.render = function () {
+    if (this.y < 75) {
+        this.y = 0;
+        this.sprite = 'images/Star.png';
+
+    } else {
+        this.sprite = playerPersonality;
+    }
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+Player.prototype.handleInput = function (direction) {
+    var ypix = 82;
+    var xpix = 100;
+    swoosh.play();
+    switch(direction) {
+        case 'left':
+            if (this.x > 0 ) this.x -= xpix;
+            break;
+        case 'right':
+            if (this.x < 400) this.x += xpix;
+            break;
+        case 'up':
+            if (this.y > 0) this.y -= ypix;
+            break;
+        case 'down':
+            if (this.y < 75 + 4 * 82) this.y += ypix;
+            break;
+    };
+
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+var allEnemies = [];
+allEnemies.push(new Enemy());
 
-
+var playerPersonality = 'images/char-boy.png'; //initial value
+var player = new Player(playerPersonality);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -44,3 +111,16 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+//change the players personality
+var images, img, i;
+images = document.getElementsByTagName("img");
+for (i=0; i <  images.length; i++) {
+    images[i].addEventListener("click", function () {
+        document.getElementsByClassName('selected')[0].className = '';
+        this.className = 'selected';
+        playerPersonality = this.getAttribute("src");
+   });
+}
+var swoosh = new Audio('sounds/Arrow.mp3');
+var splash = new Audio('sounds/Wave_short.mp3');
