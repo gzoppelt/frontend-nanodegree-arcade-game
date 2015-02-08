@@ -53,15 +53,23 @@ var Player = function () {
 
 }
 Player.prototype.update = function () {
-
-    if (this.y < 75) {
+    var i;
+    if (this.y < 0) {
+        this.y = 0;
+        for (i=1; i <= 100; i++) {
+            score += 1;
+            setScore(score);
+        }
         splash.play();
-        setTimeout(function (){ player = new Player(); }, 500);
+
+        setTimeout(function () {
+            player = new Player();
+
+        }, 400);
     }
 }
 Player.prototype.render = function () {
-    if (this.y < 75) {
-        this.y = 0;
+    if (this.y === 0) {
         this.sprite = 'images/Star.png';
 
     } else {
@@ -122,5 +130,17 @@ for (i=0; i <  images.length; i++) {
         playerPersonality = this.getAttribute("src");
    });
 }
+
+//Sounds
 var swoosh = new Audio('sounds/Arrow.mp3');
 var splash = new Audio('sounds/Wave_short.mp3');
+var caught = new Audio('sounds/Kiss.mp3');
+
+//Score
+var score = 0; //initial value
+setScore = function (score) {
+    var elScore = document.getElementsByTagName('em');
+    var s = '000000' + score;
+    s = s.substr(s.length- 6);
+    elScore[0].innerHTML = s;
+};
