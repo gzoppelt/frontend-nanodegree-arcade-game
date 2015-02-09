@@ -1,91 +1,96 @@
-// Enemies our player must avoid
-var Enemy = function() {
+'use strict';
+/*
+ * Enemies our player must avoid
+ */
+var Enemy = function () {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     this.x = 0;
-    this.y = 65 + Math.floor(Math.random() * 3) *82;
+    this.y = 65 + Math.floor(Math.random() * 3) * 82;
+
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-}
+};
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
-Enemy.prototype.update = function(dt) {
+Enemy.prototype.update = function (dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    var i, r;
+    var i, step = 80 * dt;
 
-
-
-    //define the global step
-    step = 80 * dt;
-
-    //move one step
+    // Move one step
     this.x += step;
 
-    //kill the bugs after they run out of the canvas
+    // Kill the bug after it run out of the canvas
     if (this.x > 505) {
         i = allEnemies.indexOf(this);
-        allEnemies.splice(i,1);
+        allEnemies.splice(i, 1);
     }
-    //collision?
-    if (this.y == player.y - 10){ //enemies run 10pt above th player
+
+    //Collision Detection
+    if (this.y === player.y - 10){ //enemies run 10pt above the player
         if (player.x + 15 < this.x + 99 && player.x + 85 > this.x + 1) {
             //player.left < enemy.right && player.right  > enemy.left ==> collision
             caught.play();
-            score -= 50;
-            setScore(score);
+            score.count(-50);
             player = new Player();
         }
     }
-}
+};
 
-
-// Draw the enemy on the screen, required method for game
+/*
+ * Draw the enemy on the screen, required method for game
+ */
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function () {
-    //x random between 0 and 400
+    //x random between 0 and 400 to let the player start in a random square
     this.x = Math.floor(Math.random() * 5) * 100;
+    //Top row height is 75, 82 for the remaining 4
     this.y = 75 + (4 * 82);
-
-}
+};
 Player.prototype.update = function () {
-    var i;
+    //Has the player made it to the beach?
     if (this.y < 0) {
+
+        //avoid rendering atop of canvas
         this.y = 0;
-        for (i=1; i <= 100; i++) {
-            score += 1;
-            setScore(score);
-        }
+
+        //reset score
+        score.count(+100);
+
+        //play noise
         splash.play();
 
+        //give some time to enjoy the splash
         setTimeout(function () {
             player = new Player();
-
         }, 400);
     }
-}
+};
 Player.prototype.render = function () {
-    if (this.y === 0) {
+    if (this.y === 0) { //player is though
+        //mark the event
         this.sprite = 'images/Star.png';
     } else {
+        //or adjust the sprite
         this.sprite = playerPersonality;
     }
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
-
+};
 Player.prototype.handleInput = function (direction) {
+    //player input only if "Playing"
     if (run) {
-        var ypix = 82;
-        var xpix = 100;
+        var ypix = 82;  //up & down
+        var xpix = 100; //left & right
         swoosh.play();
         switch (direction) {
             case 'left':
@@ -101,9 +106,8 @@ Player.prototype.handleInput = function (direction) {
                 if (this.y < 75 + 4 * 82) this.y += ypix;
                 break;
         }
-        ;
     }
-}
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -123,12 +127,11 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-//change the players personality
-var images, img, i;
+//change the players personality (i.e. sprite)
+var images, i;
 images = document.getElementsByTagName("img");
 for (i=0; i <  images.length; i++) {
     images[i].addEventListener("click", function () {
@@ -138,27 +141,35 @@ for (i=0; i <  images.length; i++) {
    });
 }
 
-//Sounds
+// used Sounds
 var swoosh = new Audio('sounds/Arrow.mp3');
 var splash = new Audio('sounds/Wave_short.mp3');
 var caught = new Audio('sounds/Kiss.mp3');
 
 //Score
-var score = 0; //initial value
-setScore = function (score) {
-    var elScore = document.getElementsByTagName('em')[0];
-    if (score < 0) {
-        elScore.className = "minus";
-        score = -score;
-        var s = '00000' + score;
-        s = s.substr(s.length- 5);
-        s = '-' + s;
-    } else {
-        elScore.className = "plus";
-        var s = '000000' + score;
-        s = s.substr(s.length- 6);
+var score = {
+    value   : 0, //initial value
+    display : document.getElementsByTagName('em')[0],
+    reset : function () {
+        this.value = 0;
+        this.count(0);
+    },
+    count : function (score) {
+        var s;
+        this.value += score;
+        if (this.value < 0) {
+            this.display.className = "minus";
+            score = -this.value;
+            s = '00000' + score;
+            s = s.substr(s.length - 5);
+            s = '-' + s;
+        } else {
+            this.display.className = "plus";
+            s = '000000' + this.value;
+            s = s.substr(s.length - 6);
+        }
+        this.display.innerHTML = s;
     }
-    elScore.innerHTML = s;
 };
 
 //crating new enemies
@@ -177,10 +188,12 @@ var createEnemy = {
         this.gameTime = 0;
         this.createTime = 2;
     }
-}
+};
 
-
-//Start / Stop
+/* Start / Stop
+ * This option was implemented to be able to log the positions of player and enemies
+ * at any given time. This helped tremendously with the collision detection.
+ */
 var run = false; //initial value
 document.getElementById('play').addEventListener("click", function (){
     run = true;
@@ -191,10 +204,10 @@ document.getElementById('pause').addEventListener("click", function (){
     run = false;
     document.getElementById("status").className = 'paused';
     document.getElementById("status").innerHTML = 'Paused';
+    //detectCollision(); //for debugging
 });
 document.getElementById('stop').addEventListener("click", function (){
-    score = 0;
-    setScore(score);
+    score.reset();
     createEnemy.reset();
     allEnemies = [];
     allEnemies.push(new Enemy());
@@ -204,7 +217,10 @@ document.getElementById('stop').addEventListener("click", function (){
     document.getElementById("status").innerHTML = 'Press Play to Start';
 });
 
-//Collision
+/* Collision Detection
+ * Though the actual collision detection was moved into the Enemy.update() method I keep this routine for
+ * easy debugging. A call from the Pause button would log the positions of player and all enemies.
+ */
 function detectCollision(){
     var i, px, pl, pr, py, ex, el, er, ey, result;
     result = false;
@@ -218,10 +234,10 @@ function detectCollision(){
         er = ex + 99;
         ey = allEnemies[i].y;
         if (py === ey && pl < er && pr > el) {
-            console.log('yes: ' +py+'='+ey+' && '+pl+' < '+er+' && '+pr+' > '+el);
+            console.log('true: ' +py+'='+ey+' && '+pl+' < '+er+' && '+pr+' > '+el);
             result = result || true;
         } else {
-            console.log('no: ' +py+'='+ey+' && '+pl+' < '+er+' && '+pr+' > '+el);
+            console.log('false: ' +py+'='+ey+' && '+pl+' < '+er+' && '+pr+' > '+el);
             result = result || false;
         }
     }

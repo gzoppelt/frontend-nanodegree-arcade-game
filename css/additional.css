@@ -1,21 +1,30 @@
-body {
-
-}
+/* move the game into the middle of the screen */
 #wrapper {
     width: 905px;
     margin: 0 auto;
 }
 
+/* select player div */
 #players {
     margin-top: 30px;
     width: 200px;
     float: left;
 }
 
+#players>img {
+    height: 90px;
+}
+
+.selected {
+    border: solid 1px;
+}
+
+/* canvas div */
 #c {
     float: left;
 }
 
+/* score div */
 #score {
     margin-top: 30px;
     width: 200px;
@@ -24,51 +33,53 @@ body {
 
 }
 
+/* score font */
 #score>em {
     font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
     font-style: normal;
     font-weight: 500;
     font-size: 48px;
 }
+
+/* score color */
 .minus {
     color: red;
 }
+
 .plus {
     color: blue;
 }
 
-/* buttons */
+/* Start / Pause / End buttons */
 button {
     margin-top: 30px;
     width: 60px;
     height: 60px;
     border: 0;
 }
-button#play {
-    background: url(../images/Play.png) no-repeat;
 
+/* button pictures */
+#play {
+    background: url(../images/Play.png);
 }
 
 #pause {
-    background-image: url(../images/Pause.png);
+    background: url(../images/Pause.png);
 }
 
 #stop {
-    background-image: url(../images/Stop.png);
+    background: url(../images/Stop.png);
 }
+
+/* game status */
 .ready {
     color: black;
 }
+
 .playing {
     color: green;
 }
+
 .paused {
     color: pink;
-}
-
-#players>img {
-    height: 90px;
-}
-.selected {
-    border: solid 1px;
 }
