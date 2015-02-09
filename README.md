@@ -1,6 +1,8 @@
 frontend-nanodegree-arcade-game
 ===============================
 
-Students should use this rubric: https://www.udacity.com/course/viewer#!/c-ud015/l-3072058665/m-3072588797
+No specific sources have been used to complete the project.
+The work was all done by me.
+When in different commits different users show up it was me working on different computers.
 
-for self-checking their submission.
+Guenther Zoppelt
