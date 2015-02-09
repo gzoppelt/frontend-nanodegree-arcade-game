@@ -25,12 +25,16 @@ body {
 }
 
 #score>em {
-    color: blue;
     font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
     font-style: normal;
     font-weight: 500;
     font-size: 48px;
-
+}
+.minus {
+    color: red;
+}
+.plus {
+    color: blue;
 }
 
 /* buttons */
@@ -51,6 +55,15 @@ button#play {
 
 #stop {
     background-image: url(../images/Stop.png);
+}
+.ready {
+    color: black;
+}
+.playing {
+    color: green;
+}
+.paused {
+    color: pink;
 }
 
 #players>img {
